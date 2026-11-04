@@ -7,7 +7,7 @@
 </div>
 
 <h2>💫 About the Game</h2>
-<p>Spacionave is an endless runner game developed in Python using the Pygame library. The player controls a spaceship that must avoid obstacles and survive as long as possible.</p>
+<p>Spaceonave is an endless runner game developed in Python using the Pygame library. The player controls a spaceship that must avoid obstacles and survive as long as possible.</p>
 
 <h2>📌 Objectives</h2>
 <p>Improve my programming skills and learn more about game development, especially in using graphical libraries like Pygame.</p>
@@ -38,13 +38,13 @@
 <p>Follow the steps below to run the game on your machine:</p>
 <ol>
     <li>🔧 <strong>Clone the Repository:</strong>
-        <pre><code>git clone https://github.com/DavidEricson00/Spacionave.git</code></pre>
+        <pre><code>git clone https://github.com/DavidEricson00/Spaceonave.git</code></pre>
     </li>
     <li>🐍 <strong>Install Dependencies:</strong>
         <pre><code>pip install pygame</code></pre>
     </li>
     <li>📁 <strong>Navigate to the Directory:</strong>
-        <pre><code>cd Spacionave</code></pre>
+        <pre><code>cd Spaceonave</code></pre>
     </li>
     <li>🎮 <strong>Run the Game:</strong>
         <pre><code>python main.py</code></pre>
