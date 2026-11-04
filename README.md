@@ -1,5 +1,5 @@
 <h1 align="center">
-    ⭐ Spacionave
+    ⭐ Spaceonave
 </h1>
 
 <div align="center">
