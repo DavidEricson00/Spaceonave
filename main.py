@@ -4,6 +4,14 @@ from sys import exit
 from random import randint, choice
 
 
+# Collision Settings
+COLLISION_VISIBLE = False
+
+# (width, height)
+SHIP_COLLISION_SIZE = (24, 30)
+SHRINK_COLLISION_SIZE = (16, 20)
+
+
 # Ship Class
 class Ship(pygame.sprite.Sprite):
     def __init__(self):
@@ -40,7 +48,43 @@ class Ship(pygame.sprite.Sprite):
         self.image = self.ship_sprites[self.ship_index]
         self.rect = self.image.get_rect(center=(150, 550))
         self.mask = pygame.mask.from_surface(self.image)
-        self.default_rect = self.rect
+
+        self.is_shrink = False
+        self.collision_rect = pygame.Rect(0, 0, 0, 0)
+
+        self.update_collision_mask()
+
+    def update_collision_mask(self):
+        """Cria uma máscara de colisão retangular centralizada."""
+
+        if self.is_shrink:
+            collision_width, collision_height = SHRINK_COLLISION_SIZE
+        else:
+            collision_width, collision_height = SHIP_COLLISION_SIZE
+
+        # Impede que a colisão seja maior que o sprite
+        collision_width = min(collision_width, self.image.get_width())
+        collision_height = min(collision_height, self.image.get_height())
+
+        # Retângulo centralizado no sprite
+        self.collision_rect = pygame.Rect(
+            0, 0, collision_width, collision_height
+        )
+        self.collision_rect.center = self.image.get_rect().center
+
+        # Cria uma superfície transparente com apenas o retângulo preenchido
+        collision_surface = pygame.Surface(
+            self.image.get_size(),
+            pygame.SRCALPHA
+        )
+
+        pygame.draw.rect(
+            collision_surface,
+            (255, 255, 255, 255),
+            self.collision_rect
+        )
+
+        self.mask = pygame.mask.from_surface(collision_surface)
 
     def ship_input(self):
         keys = pygame.key.get_pressed()
@@ -72,6 +116,7 @@ class Ship(pygame.sprite.Sprite):
         # Shrink Ship
         if keys[pygame.K_LSHIFT]:
             self.movespeed = 5
+            self.is_shrink = True
             self.ship_index += 0.2
 
             if self.ship_index >= len(self.ship_sprites):
@@ -79,20 +124,22 @@ class Ship(pygame.sprite.Sprite):
 
             self.image = self.ship_shrink_sprites[int(self.ship_index)]
             self.rect = self.image.get_rect(center=self.rect.center)
-            self.mask = pygame.mask.from_surface(self.image)
 
         # Left Animation
         elif keys[pygame.K_a]:
+            self.is_shrink = False
             self.image = self.ship_left
             self.rect = self.image.get_rect(center=self.rect.center)
 
         # Right Animation
         elif keys[pygame.K_d]:
+            self.is_shrink = False
             self.image = self.ship_right
             self.rect = self.image.get_rect(center=self.rect.center)
 
         # Ship Default Animation
         else:
+            self.is_shrink = False
             self.ship_index += 0.2
 
             if self.ship_index >= len(self.ship_sprites):
@@ -100,7 +147,9 @@ class Ship(pygame.sprite.Sprite):
 
             self.image = self.ship_sprites[int(self.ship_index)]
             self.rect = self.image.get_rect(center=self.rect.center)
-            self.mask = pygame.mask.from_surface(self.image)
+
+        # Atualiza a máscara após qualquer mudança de sprite
+        self.update_collision_mask()
 
     def update(self):
         global playing
@@ -110,8 +159,10 @@ class Ship(pygame.sprite.Sprite):
 
         # Position Reset
         if not playing:
+            self.is_shrink = False
             self.image = self.ship_sprites[int(self.ship_index)]
             self.rect = self.image.get_rect(center=(150, 550))
+            self.update_collision_mask()
 
 
 # Bullet Class
@@ -558,6 +609,19 @@ while True:
         # Space Ship
         ship.draw(game_surface)
         ship.update()
+
+        # Collision Visualization
+        if COLLISION_VISIBLE:
+            collision_rect = ship.sprite.collision_rect.move(
+                ship.sprite.rect.topleft
+            )
+
+            pygame.draw.rect(
+                game_surface,
+                'RED',
+                collision_rect,
+                1
+            )
 
         # Display
         game_surface.blit(display, displayrect)
