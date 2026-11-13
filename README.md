@@ -34,22 +34,51 @@
     <li><strong>Sound and Music:</strong> Sound effects and background music.</li>
 </ul>
 
-<h2>📝 How to Run</h2>
-<p>Follow the steps below to run the game on your machine:</p>
-<ol>
-    <li>🔧 <strong>Clone the Repository:</strong>
-        <pre><code>git clone https://github.com/DavidEricson00/Spaceonave.git</code></pre>
-    </li>
-    <li>🐍 <strong>Install Dependencies:</strong>
-        <pre><code>pip install pygame</code></pre>
-    </li>
-    <li>📁 <strong>Navigate to the Directory:</strong>
-        <pre><code>cd Spaceonave</code></pre>
-    </li>
-    <li>🎮 <strong>Run the Game:</strong>
-        <pre><code>python main.py</code></pre>
-    </li>
-</ol>
+## 📦 Releases
+
+Download the latest version of Spaceonave from the [GitHub Releases](https://github.com/DavidEricson00/Spaceonave/releases) page.
+
+### ⭐ Latest Release: v1.0.0
+
+The first stable release of Spaceonave is available for Windows and Linux.
+
+| Platform | Download |
+|---|---|
+| Windows | [Spaceonave-Windows-v1.0.0.zip](https://github.com/DavidEricson00/Spaceonave/releases/download/v1.0.0/Spaceonave-Windows-v1.0.0.zip) |
+| Linux | [Spaceonave-Linux-v1.0.0.zip](https://github.com/DavidEricson00/Spaceonave/releases/download/v1.0.0/Spaceonave-Linux-v1.0.0.zip) |
+
+**Installation:**
+1. Download the ZIP file for your operating system.
+2. Extract the contents.
+3. Run the game executable.
+
+No Python or Pygame installation is required.
+
+For older versions and release notes, visit the [Releases page](https://github.com/DavidEricson00/Spaceonave/releases).
+
+## 📝 How to Run from Source
+
+If you prefer to run the game from source code, follow these steps:
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/DavidEricson00/Spaceonave.git
+   ```
+
+2. **Navigate to the Directory:**
+   ```bash
+   cd Spaceonave
+   ```
+
+3. **Install Dependencies:**
+   ```bash
+   pip install pygame
+   ```
+
+4. **Run the Game:**
+   ```bash
+   python main.py
+   ```
 
 <h2>✨ Credits</h2>
 <ul>
