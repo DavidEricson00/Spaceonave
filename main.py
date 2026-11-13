@@ -1,8 +1,11 @@
 
 import pygame
-from sys import exit
 from random import randint, choice
+import os
+import sys
 
+if getattr(sys, 'frozen', False):
+    os.chdir(os.path.dirname(sys.executable))
 
 # Collision Settings
 COLLISION_VISIBLE = False
