@@ -4,8 +4,17 @@ from random import randint, choice
 import os
 import sys
 
+
+# Resource Path
 if getattr(sys, 'frozen', False):
-    os.chdir(os.path.dirname(sys.executable))
+    BASE_PATH = sys._MEIPASS
+else:
+    BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+
+def resource_path(path):
+    return os.path.join(BASE_PATH, path)
+
 
 # Collision Settings
 COLLISION_VISIBLE = False
@@ -21,25 +30,25 @@ class Ship(pygame.sprite.Sprite):
         super().__init__()
 
         # Sprites
-        ship_1 = pygame.image.load('Sprites/Ship/ship1.png').convert_alpha()
-        ship_2 = pygame.image.load('Sprites/Ship/ship2.png').convert_alpha()
+        ship_1 = pygame.image.load(resource_path('Sprites/Ship/ship1.png')).convert_alpha()
+        ship_2 = pygame.image.load(resource_path('Sprites/Ship/ship2.png')).convert_alpha()
 
-        ship_shrink_1 = pygame.image.load('Sprites/Ship/tinyship.png').convert_alpha()
+        ship_shrink_1 = pygame.image.load(resource_path('Sprites/Ship/tinyship.png')).convert_alpha()
         ship_shrink_1 = pygame.transform.scale(
             ship_shrink_1,
             (int(ship_shrink_1.get_width() * 1.5),
              int(ship_shrink_1.get_height() * 1.5))
         )
 
-        ship_shrink_2 = pygame.image.load('Sprites/Ship/tinyship2.png').convert_alpha()
+        ship_shrink_2 = pygame.image.load(resource_path('Sprites/Ship/tinyship2.png')).convert_alpha()
         ship_shrink_2 = pygame.transform.scale(
             ship_shrink_2,
             (int(ship_shrink_2.get_width() * 1.5),
              int(ship_shrink_2.get_height() * 1.5))
         )
 
-        self.ship_left = pygame.image.load('Sprites/Ship/shipleft.png').convert_alpha()
-        self.ship_right = pygame.image.load('Sprites/Ship/shipright.png').convert_alpha()
+        self.ship_left = pygame.image.load(resource_path('Sprites/Ship/shipleft.png')).convert_alpha()
+        self.ship_right = pygame.image.load(resource_path('Sprites/Ship/shipright.png')).convert_alpha()
 
         # Animation
         self.ship_shrink_sprites = [ship_shrink_1, ship_shrink_2]
@@ -65,17 +74,14 @@ class Ship(pygame.sprite.Sprite):
         else:
             collision_width, collision_height = SHIP_COLLISION_SIZE
 
-        # Impede que a colisão seja maior que o sprite
         collision_width = min(collision_width, self.image.get_width())
         collision_height = min(collision_height, self.image.get_height())
 
-        # Retângulo centralizado no sprite
         self.collision_rect = pygame.Rect(
             0, 0, collision_width, collision_height
         )
         self.collision_rect.center = self.image.get_rect().center
 
-        # Cria uma superfície transparente com apenas o retângulo preenchido
         collision_surface = pygame.Surface(
             self.image.get_size(),
             pygame.SRCALPHA
@@ -151,7 +157,6 @@ class Ship(pygame.sprite.Sprite):
             self.image = self.ship_sprites[int(self.ship_index)]
             self.rect = self.image.get_rect(center=self.rect.center)
 
-        # Atualiza a máscara após qualquer mudança de sprite
         self.update_collision_mask()
 
     def update(self):
@@ -174,12 +179,12 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
 
         # Bullet Variables
-        self.image = pygame.image.load('Sprites/Ship/shot.png').convert_alpha()
+        self.image = pygame.image.load(resource_path('Sprites/Ship/shot.png')).convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
-        destroybrick = pygame.mixer.Sound('Sound Effects and Music/destroy.mp3')
+        destroybrick = pygame.mixer.Sound(resource_path('Sound Effects and Music/destroy.mp3'))
 
         self.rect.y -= 20
         hit_brick = pygame.sprite.spritecollide(
@@ -205,15 +210,15 @@ class Brick(pygame.sprite.Sprite):
 
         # Bricks Sprites Select
         if sprite == 1:
-            self.original_image = pygame.image.load('Sprites/Bricks/brick1.png').convert_alpha()
+            self.original_image = pygame.image.load(resource_path('Sprites/Bricks/brick1.png')).convert_alpha()
         elif sprite == 2:
-            self.original_image = pygame.image.load('Sprites/Bricks/brick2.png').convert_alpha()
+            self.original_image = pygame.image.load(resource_path('Sprites/Bricks/brick2.png')).convert_alpha()
         elif sprite == 3:
-            self.original_image = pygame.image.load('Sprites/Bricks/brick3.png').convert_alpha()
+            self.original_image = pygame.image.load(resource_path('Sprites/Bricks/brick3.png')).convert_alpha()
         elif sprite == 4:
-            self.original_image = pygame.image.load('Sprites/Bricks/brick4.png').convert_alpha()
+            self.original_image = pygame.image.load(resource_path('Sprites/Bricks/brick4.png')).convert_alpha()
         elif sprite == 5:
-            self.original_image = pygame.image.load('Sprites/Bricks/brick5.png').convert_alpha()
+            self.original_image = pygame.image.load(resource_path('Sprites/Bricks/brick5.png')).convert_alpha()
 
         # Bricks Resize
         scale_factor = 1.8
@@ -263,7 +268,7 @@ class Animation(pygame.sprite.Sprite):
             for i in range(1, 7):
                 self.frames.append(
                     pygame.image.load(
-                        f'Sprites/Animations/Explosion/explosion{i}.png'
+                        resource_path(f'Sprites/Animations/Explosion/explosion{i}.png')
                     ).convert_alpha()
                 )
 
@@ -283,7 +288,7 @@ class Animation(pygame.sprite.Sprite):
 
 # Ship and Bricks Collision
 def collision_sprite():
-    death = pygame.mixer.Sound('Sound Effects and Music/death.mp3')
+    death = pygame.mixer.Sound(resource_path('Sound Effects and Music/death.mp3'))
 
     if pygame.sprite.spritecollide(
         ship.sprite, bricks, False, pygame.sprite.collide_mask
@@ -345,7 +350,6 @@ def screen_to_game(pos):
 
     mouse_x, mouse_y = pos
 
-    # Ignora cliques nas bordas pretas
     if not (
         offset_x <= mouse_x < offset_x + new_width
         and offset_y <= mouse_y < offset_y + new_height
@@ -392,11 +396,11 @@ game_surface = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
 
 pygame.display.set_caption('Spaceonave')
 
-icon = pygame.image.load('Sprites/Menu and Icon/icon.png').convert_alpha()
+icon = pygame.image.load(resource_path('Sprites/Menu and Icon/icon.png')).convert_alpha()
 pygame.display.set_icon(icon)
 
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('Font/Pixeltype.ttf', 50)
+test_font = pygame.font.Font(resource_path('Font/Pixeltype.ttf'), 50)
 
 playing = False
 final_score = 0
@@ -420,23 +424,23 @@ animation = pygame.sprite.Group()
 
 
 # Musics and Sound Effects
-laser = pygame.mixer.Sound('Sound Effects and Music/laser.mp3')
-play = pygame.mixer.Sound('Sound Effects and Music/play.mp3')
-shrink = pygame.mixer.Sound('Sound Effects and Music/shrink.mp3')
-background_music = pygame.mixer.Sound('Sound Effects and Music/background.mp3')
+laser = pygame.mixer.Sound(resource_path('Sound Effects and Music/laser.mp3'))
+play = pygame.mixer.Sound(resource_path('Sound Effects and Music/play.mp3'))
+shrink = pygame.mixer.Sound(resource_path('Sound Effects and Music/shrink.mp3'))
+background_music = pygame.mixer.Sound(resource_path('Sound Effects and Music/background.mp3'))
 
 background_music.play(loops=-1)
 
 
 # Background
 background = pygame.image.load(
-    'Sprites/Backgorunds/Background.png'
+    resource_path('Sprites/Backgorunds/Background.png')
 ).convert_alpha()
 
 
 # Main Menu
 # Title
-titlelog = pygame.image.load('Sprites/Menu and Icon/title.png').convert_alpha()
+titlelog = pygame.image.load(resource_path('Sprites/Menu and Icon/title.png')).convert_alpha()
 
 titlelogo = pygame.transform.scale(
     titlelog,
@@ -461,11 +465,11 @@ play_sprites = []
 play_index = 0
 
 play_sprites.append(
-    pygame.image.load('Sprites/Menu and Icon/Play1.png').convert_alpha()
+    pygame.image.load(resource_path('Sprites/Menu and Icon/Play1.png')).convert_alpha()
 )
 
 play_sprites.append(
-    pygame.image.load('Sprites/Menu and Icon/Play2.png').convert_alpha()
+    pygame.image.load(resource_path('Sprites/Menu and Icon/Play2.png')).convert_alpha()
 )
 
 play_scaled = pygame.transform.scale(
@@ -481,7 +485,7 @@ playrect = play_scaled.get_rect(center=(150, 530))
 
 # Game Display
 # Display Interface
-display = pygame.image.load('Sprites/Display/display.png').convert_alpha()
+display = pygame.image.load(resource_path('Sprites/Display/display.png')).convert_alpha()
 displayrect = display.get_rect(midtop=(150, 0))
 
 
@@ -489,15 +493,15 @@ displayrect = display.get_rect(midtop=(150, 0))
 ammo_display_list = []
 
 ammo_display_list.append(
-    pygame.image.load('Sprites/Display/1bullet.png').convert_alpha()
+    pygame.image.load(resource_path('Sprites/Display/1bullet.png')).convert_alpha()
 )
 
 ammo_display_list.append(
-    pygame.image.load('Sprites/Display/2bullet.png').convert_alpha()
+    pygame.image.load(resource_path('Sprites/Display/2bullet.png')).convert_alpha()
 )
 
 ammo_display_list.append(
-    pygame.image.load('Sprites/Display/3bullet.png').convert_alpha()
+    pygame.image.load(resource_path('Sprites/Display/3bullet.png')).convert_alpha()
 )
 
 ammodispimage = ammo_display_list[ammo - 1]
@@ -521,7 +525,7 @@ while True:
         # Quit Game
         if event.type == pygame.QUIT:
             pygame.quit()
-            exit()
+            sys.exit()
 
         # Play Interaction
         elif event.type == pygame.MOUSEMOTION:
